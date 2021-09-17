@@ -7,12 +7,16 @@ import lombok.Getter;
 public class ClientResponse {
     private  String id;
     private String name;
-    private String phone;
+    private String email;
+    //private String password;
+    private Boolean enabled;
     //private String name;
     public ClientResponse fromClient(Client publisher) {
         this.id = publisher.getId();
         this.name = publisher.getName();
-        this.phone = publisher.getPhone();
+        this.email = publisher.getEmail();
+        //this.password = publisher.getPassword();
+        this.enabled = publisher.getEnabled();
         //this.name = publisher.getName();
         return this;
     }

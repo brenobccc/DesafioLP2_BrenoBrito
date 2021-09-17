@@ -22,12 +22,30 @@ public class ClientService {
 
     public Client create(Client client){
 
-        //var allPublishers = repository.getAll();
-        if(repository.existsByName(client.getName())){
+        //NAME
+        if(client.getName()==null){
+            throw new RuntimeException("Nome é nulo");
+        }else if(repository.existsByName(client.getName())){
             throw new RuntimeException("Nome já existe");
         }
+        //EMAIL
+        if(client.getEmail()!=null){
+            if(repository.existsByEmail(client.getEmail()))
+                throw new RuntimeException("Email já existe");
+        }else{
+            throw new RuntimeException("Dados inválidos! Verifique se seu Email e senha estão corretos");
+        }
 
+
+        //ENABLE.
+        if(client.getEmail()==null || client.getPassword()==null){
+            client.setEnabled(false);
+        }else{
+            client.setEnabled(true);
+        }
+        //System.out.println("EMAIL:"+repository.existsByName(client.getEmail()));
         return repository.save(client);
+
     }
 
 
@@ -38,11 +56,21 @@ public class ClientService {
 
         //System.out.println("valor2"+!repository.existsByName(publisher.getName()));
         var p = repository.findByName(client.getName());
+        System.out.println("EMAIL:"+client.getEmail());
         if(p != null && !p.getId().equals(id)){
             throw new RuntimeException("Nome já existe");
         }
-        clientDatabase.setName(client.getName());
-        clientDatabase.setPhone(client.getPhone());
+        if(client.getName() != null){
+            clientDatabase.setName(client.getName());
+        }
+        if(client.getEmail() != null){
+            clientDatabase.setEmail(client.getEmail());
+        }
+        if(client.getPassword() != null){
+            clientDatabase.setPassword(client.getPassword());
+        }
+
+
 
         return repository.save(clientDatabase);
     }
