@@ -1,6 +1,7 @@
 package br.edu.ifce.lp2.model.services;
 
 
+import br.edu.ifce.lp2.controller.request.ClientRequest;
 import br.edu.ifce.lp2.model.entities.Client;
 import br.edu.ifce.lp2.model.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.Collection;
+import java.util.Objects;
 
 @Service
 public class ClientService {
@@ -60,13 +62,26 @@ public class ClientService {
         if(p != null && !p.getId().equals(id)){
             throw new RuntimeException("Nome já existe");
         }
-        if(client.getName() != null){
+        if(client.getName() != null && !client.getName().equals("")){
             clientDatabase.setName(client.getName());
         }
+
+
+/*
         if(client.getEmail() != null){
             clientDatabase.setEmail(client.getEmail());
+        }*/
+
+        //_________
+        if(client.getEmail()!=null){
+            if(repository.existsByEmail(client.getEmail()))
+                throw new RuntimeException("Email já existe");
+            else{
+                clientDatabase.setEmail(client.getEmail());
+            }
         }
-        if(client.getPassword() != null){
+
+        if(client.getPassword() != null && !client.getPassword().equals("")){
             clientDatabase.setPassword(client.getPassword());
         }
 
@@ -85,6 +100,11 @@ public class ClientService {
     }
 
     public void delete(String id) {
-        repository.delete(getById(id));
+
+        if(!repository.existsById(id)){
+            throw new RuntimeException("Cliente não cadastrado.");
+        }else{
+            repository.delete(getById(id));
+        }
     }
 }
